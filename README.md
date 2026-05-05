@@ -13,4 +13,6 @@ Official static site for Iku?.
 
 This repository is intended for GitHub Pages with the custom domain `ikuapp.jp`.
 
-DNS still needs to be configured at the domain registrar after GitHub Pages is enabled.
+GitHub Pages is configured for `ikuapp.jp` and `www.ikuapp.jp` with HTTPS enforcement.
+
+Before App Store submission, confirm that `support@ikuapp.jp` can receive mail.
