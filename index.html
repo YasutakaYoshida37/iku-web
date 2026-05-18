@@ -18,6 +18,7 @@
     <header class="site-header">
       <a class="brand" href="/">Iku?</a>
       <nav class="nav" aria-label="Main navigation">
+        <a href="#demo-title">Demo</a>
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
         <a href="/support/">Support</a>
@@ -48,8 +49,56 @@
             ダラダラ悩む時間を減らし、自分にとって納得できる予定を選ぶ手助けをします。
           </p>
           <div class="actions">
-            <a class="button primary" href="/support/">お問い合わせ</a>
+            <a class="button primary" href="#demo-title">Webで試す</a>
             <a class="button secondary" href="/privacy/">プライバシーを見る</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section" aria-labelledby="demo-title">
+        <div class="container demo-layout">
+          <div class="demo-copy">
+            <p class="eyebrow">Install前に試せる</p>
+            <h2 id="demo-title">お誘い整理をWebで体験</h2>
+            <p class="lead">
+              アプリを入れる前に、5問スワイプの流れを軽く試せます。
+              結果は保存されないので、まずは手触りだけ見てください。
+            </p>
+            <div class="demo-points" aria-label="体験できること">
+              <div class="demo-point">行く材料と見送る材料を、2択でさっと分ける。</div>
+              <div class="demo-point">最後に結論の雰囲気を確認する。</div>
+              <div class="demo-point">予定として残したい場合は、iOSアプリへ進む。</div>
+            </div>
+          </div>
+          <div class="demo-phone" aria-label="Iku?のスワイプ体験デモ">
+            <div class="demo-screen">
+              <div class="demo-screen-header">
+                <div class="demo-app-name">Iku?</div>
+                <div class="demo-counter" id="demoCounter">1 / 5</div>
+              </div>
+              <div class="demo-deck" id="demoDeck">
+                <div class="demo-card-shadow one"></div>
+                <div class="demo-card-shadow two"></div>
+                <div class="demo-card" id="demoCard" role="group" aria-live="polite">
+                  <div>
+                    <div class="demo-axis" id="demoAxis">期待</div>
+                    <div class="demo-question" id="demoQuestion">そのお誘い、少し楽しみですか？</div>
+                    <div class="demo-hint" id="demoHint">右は行く材料、左は見送る材料として記録します。</div>
+                  </div>
+                  <div class="demo-actions">
+                    <button class="demo-button minus" type="button" data-demo-answer="minus">見送る材料</button>
+                    <button class="demo-button plus" type="button" data-demo-answer="plus">行く材料</button>
+                  </div>
+                </div>
+              </div>
+              <div class="demo-result" id="demoResult" aria-live="polite">
+                <div class="demo-result-label">5問で整理した結果</div>
+                <div class="demo-result-title" id="demoResultTitle">見えてきました</div>
+                <p class="demo-result-body" id="demoResultBody">結果を確認しています。</p>
+                <a class="demo-store-link" href="https://apps.apple.com/app/id6769068322">iOSアプリで予定に残す</a>
+                <button class="demo-reset" type="button" id="demoReset">もう一度試す</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -65,6 +114,7 @@
             <li>飲み会</li>
             <li>仕事の付き合い</li>
             <li>友人との予定</li>
+            <li>家族との予定</li>
             <li>デート</li>
             <li>合コン・マッチングアプリ</li>
           </ul>
@@ -102,5 +152,154 @@
         </nav>
       </div>
     </footer>
+    <script>
+      (() => {
+        const questions = [
+          {
+            axis: "期待",
+            question: "そのお誘い、少し楽しみですか？",
+            hint: "気持ちが少しでも前に向くかを見ます。"
+          },
+          {
+            axis: "負担",
+            question: "時間やお金に無理はなさそうですか？",
+            hint: "行った後にしんどくなりすぎないかを見ます。"
+          },
+          {
+            axis: "関係性",
+            question: "相手との関係にとって良さそうですか？",
+            hint: "会うことで残るものがありそうかを見ます。"
+          },
+          {
+            axis: "後悔",
+            question: "見送ったあと、少し気になりそうですか？",
+            hint: "あとから引っかかりそうかを見ます。"
+          },
+          {
+            axis: "安全",
+            question: "違和感や不安は少なそうですか？",
+            hint: "安心して選べる予定かを見ます。"
+          }
+        ];
+
+        const deck = document.getElementById("demoDeck");
+        const card = document.getElementById("demoCard");
+        const axis = document.getElementById("demoAxis");
+        const question = document.getElementById("demoQuestion");
+        const hint = document.getElementById("demoHint");
+        const counter = document.getElementById("demoCounter");
+        const result = document.getElementById("demoResult");
+        const resultTitle = document.getElementById("demoResultTitle");
+        const resultBody = document.getElementById("demoResultBody");
+        const reset = document.getElementById("demoReset");
+        const buttons = document.querySelectorAll("[data-demo-answer]");
+        let currentIndex = 0;
+        let plusCount = 0;
+        let dragStartX = 0;
+        let dragDeltaX = 0;
+        let isDragging = false;
+
+        function renderQuestion() {
+          const item = questions[currentIndex];
+          axis.textContent = item.axis;
+          question.textContent = item.question;
+          hint.textContent = item.hint;
+          counter.textContent = `${currentIndex + 1} / ${questions.length}`;
+          deck.style.display = "block";
+          result.classList.remove("is-visible");
+          card.classList.remove("is-swipe-left", "is-swipe-right");
+          card.style.transform = "";
+          card.style.opacity = "";
+        }
+
+        function showResult() {
+          deck.style.display = "none";
+          counter.textContent = "結果";
+          result.classList.add("is-visible");
+
+          if (plusCount >= 4) {
+            resultTitle.textContent = "行ってもよさそう";
+            resultBody.textContent = "楽しみや関係性の材料が多めです。アプリなら予定として残して、あとで振り返れます。";
+            return;
+          }
+
+          if (plusCount === 3) {
+            resultTitle.textContent = "条件を整えるとよさそう";
+            resultBody.textContent = "行く材料も見送る材料もあります。時間やお金など、気になる条件をアプリで整理できます。";
+            return;
+          }
+
+          resultTitle.textContent = "見送ってもよさそう";
+          resultBody.textContent = "負担や違和感がやや強めです。アプリなら見送る予定としても残せます。";
+        }
+
+        function answer(direction) {
+          if (direction === "plus") {
+            plusCount += 1;
+          }
+
+          card.classList.add(direction === "plus" ? "is-swipe-right" : "is-swipe-left");
+
+          window.setTimeout(() => {
+            currentIndex += 1;
+
+            if (currentIndex >= questions.length) {
+              showResult();
+              return;
+            }
+
+            renderQuestion();
+          }, 160);
+        }
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            answer(button.getAttribute("data-demo-answer"));
+          });
+        });
+
+        card.addEventListener("pointerdown", (event) => {
+          isDragging = true;
+          dragStartX = event.clientX;
+          dragDeltaX = 0;
+          card.setPointerCapture(event.pointerId);
+          card.style.transition = "none";
+        });
+
+        card.addEventListener("pointermove", (event) => {
+          if (!isDragging) {
+            return;
+          }
+
+          dragDeltaX = event.clientX - dragStartX;
+          const rotate = Math.max(-10, Math.min(10, dragDeltaX / 18));
+          card.style.transform = `translateX(${dragDeltaX}px) rotate(${rotate}deg)`;
+        });
+
+        card.addEventListener("pointerup", () => {
+          if (!isDragging) {
+            return;
+          }
+
+          isDragging = false;
+          card.style.transition = "";
+
+          if (Math.abs(dragDeltaX) > 72) {
+            answer(dragDeltaX > 0 ? "plus" : "minus");
+            return;
+          }
+
+          card.style.transform = "";
+        });
+
+        reset.addEventListener("click", () => {
+          currentIndex = 0;
+          plusCount = 0;
+          renderQuestion();
+        });
+
+        renderQuestion();
+      })();
+    </script>
   </body>
 </html>

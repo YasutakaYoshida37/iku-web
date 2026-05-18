@@ -195,6 +195,12 @@ h1 {
   border-top: 1px solid var(--line);
 }
 
+.demo-section {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 72px 24px;
+}
+
 .container {
   margin: 0 auto;
   max-width: 980px;
@@ -213,6 +219,229 @@ h2 {
   line-height: 1.9;
   margin: 18px 0 0;
   max-width: 760px;
+}
+
+.demo-layout {
+  align-items: center;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
+}
+
+.demo-copy .lead {
+  max-width: 560px;
+}
+
+.demo-points {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.demo-point {
+  align-items: flex-start;
+  color: var(--muted);
+  display: flex;
+  font-size: 14px;
+  gap: 10px;
+  line-height: 1.7;
+}
+
+.demo-point::before {
+  background: var(--primary);
+  border-radius: 999px;
+  content: "";
+  flex: 0 0 auto;
+  height: 8px;
+  margin-top: 9px;
+  width: 8px;
+}
+
+.demo-phone {
+  background: #f8fafc;
+  border: 1px solid #d7dde5;
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+  margin: 0 auto;
+  max-width: 370px;
+  min-height: 560px;
+  padding: 18px;
+  width: 100%;
+}
+
+.demo-screen {
+  background: linear-gradient(180deg, #fff 0%, #f2f6f4 100%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.demo-screen-header {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.demo-app-name {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.demo-counter {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.demo-deck {
+  flex: 1;
+  margin-top: 4px;
+  min-height: 280px;
+  position: relative;
+}
+
+.demo-card-shadow,
+.demo-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  inset: 0;
+  position: absolute;
+}
+
+.demo-card-shadow.one {
+  opacity: 0.55;
+  transform: translate(8px, 14px) rotate(2deg) scale(0.96);
+}
+
+.demo-card-shadow.two {
+  opacity: 0.32;
+  transform: translate(-7px, 28px) rotate(-3deg) scale(0.91);
+}
+
+.demo-card {
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px;
+  touch-action: pan-y;
+  transition: opacity 180ms ease, transform 180ms ease;
+  user-select: none;
+  z-index: 3;
+}
+
+.demo-card.is-swipe-left {
+  opacity: 0;
+  transform: translateX(-120%) rotate(-12deg);
+}
+
+.demo-card.is-swipe-right {
+  opacity: 0;
+  transform: translateX(120%) rotate(12deg);
+}
+
+.demo-axis {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.demo-question {
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.45;
+  margin-top: 16px;
+}
+
+.demo-hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 14px;
+}
+
+.demo-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18px;
+}
+
+.demo-button,
+.demo-reset,
+.demo-store-link {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  min-height: 44px;
+}
+
+.demo-button.minus {
+  background: #f3e6dd;
+  color: #8b4a2f;
+}
+
+.demo-button.plus {
+  background: #dfeee9;
+  color: #1f6654;
+}
+
+.demo-result {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+  text-align: center;
+}
+
+.demo-result.is-visible {
+  display: flex;
+}
+
+.demo-result-label {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.demo-result-title {
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.demo-result-body {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.demo-store-link {
+  align-items: center;
+  background: var(--primary);
+  color: #fff;
+  display: inline-flex;
+  justify-content: center;
+  margin-top: 4px;
+  min-height: 46px;
+  text-decoration: none;
+}
+
+.demo-reset {
+  background: transparent;
+  color: var(--muted);
 }
 
 .feature-grid {
@@ -353,6 +582,23 @@ h2 {
 
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+
+  .demo-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-phone {
+    min-height: 520px;
+    padding: 12px;
+  }
+
+  .demo-screen {
+    min-height: 500px;
+  }
+
+  .demo-question {
+    font-size: 21px;
   }
 
   .footer-inner {
