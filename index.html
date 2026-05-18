@@ -65,7 +65,7 @@
               結果は保存されないので、まずは手触りだけ見てください。
             </p>
             <div class="demo-points" aria-label="体験できること">
-              <div class="demo-point">行く材料と見送る材料を、2択でさっと分ける。</div>
+              <div class="demo-point">アプリと同じく、左スワイプがプラス材料、右スワイプがマイナス材料。</div>
               <div class="demo-point">最後に結論の雰囲気を確認する。</div>
               <div class="demo-point">予定として残したい場合は、iOSアプリへ進む。</div>
             </div>
@@ -82,12 +82,12 @@
                 <div class="demo-card" id="demoCard" role="group" aria-live="polite">
                   <div>
                     <div class="demo-axis" id="demoAxis">期待</div>
-                    <div class="demo-question" id="demoQuestion">そのお誘い、少し楽しみですか？</div>
-                    <div class="demo-hint" id="demoHint">右は行く材料、左は見送る材料として記録します。</div>
+                    <div class="demo-question" id="demoQuestion">この飲み会は、楽しめそうですか？</div>
+                    <div class="demo-hint" id="demoHint">左スワイプ: プラス材料 / 右スワイプ: マイナス材料</div>
                   </div>
                   <div class="demo-actions">
-                    <button class="demo-button minus" type="button" data-demo-answer="minus">見送る材料</button>
-                    <button class="demo-button plus" type="button" data-demo-answer="plus">行く材料</button>
+                    <button class="demo-button plus" type="button" data-demo-answer="plus">楽しめそう</button>
+                    <button class="demo-button minus" type="button" data-demo-answer="minus">楽しめなさそう</button>
                   </div>
                 </div>
               </div>
@@ -156,29 +156,34 @@
       (() => {
         const questions = [
           {
-            axis: "期待",
-            question: "そのお誘い、少し楽しみですか？",
-            hint: "気持ちが少しでも前に向くかを見ます。"
+            axis: "期待値",
+            question: "この飲み会は、楽しめそうですか？",
+            plusLabel: "楽しめそう",
+            minusLabel: "楽しめなさそう"
           },
           {
             axis: "負担",
-            question: "時間やお金に無理はなさそうですか？",
-            hint: "行った後にしんどくなりすぎないかを見ます。"
+            question: "体力・予定・お金に無理はなさそうですか？",
+            plusLabel: "無理なさそう",
+            minusLabel: "負担が大きそう"
           },
           {
             axis: "関係性",
-            question: "相手との関係にとって良さそうですか？",
-            hint: "会うことで残るものがありそうかを見ます。"
+            question: "参加すると、関係が少し良くなりそうですか？",
+            plusLabel: "良くなりそう",
+            minusLabel: "あまりなさそう"
           },
           {
             axis: "後悔",
-            question: "見送ったあと、少し気になりそうですか？",
-            hint: "あとから引っかかりそうかを見ます。"
+            question: "見送ると、話題やつながりを逃しそうですか？",
+            plusLabel: "逃しそう",
+            minusLabel: "逃さなそう"
           },
           {
-            axis: "安全",
-            question: "違和感や不安は少なそうですか？",
-            hint: "安心して選べる予定かを見ます。"
+            axis: "安全・違和感",
+            question: "メンバーや雰囲気に、違和感は少なそうですか？",
+            plusLabel: "少なそう",
+            minusLabel: "気になる"
           }
         ];
 
@@ -193,23 +198,63 @@
         const resultBody = document.getElementById("demoResultBody");
         const reset = document.getElementById("demoReset");
         const buttons = document.querySelectorAll("[data-demo-answer]");
+        const plusButton = document.querySelector("[data-demo-answer='plus']");
+        const minusButton = document.querySelector("[data-demo-answer='minus']");
         let currentIndex = 0;
         let plusCount = 0;
         let dragStartX = 0;
+        let dragStartY = 0;
         let dragDeltaX = 0;
+        let dragDeltaY = 0;
         let isDragging = false;
+        let isAnimating = false;
+        let frameId = 0;
+
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
+        }
+
+        function setCardTransform(x, y) {
+          const rotate = clamp(x / 18, -10, 10);
+          const scale = 1 - Math.min(Math.abs(x) / 1400, 0.035);
+          card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${scale})`;
+        }
+
+        function scheduleCardTransform() {
+          if (frameId) {
+            return;
+          }
+
+          frameId = window.requestAnimationFrame(() => {
+            frameId = 0;
+            setCardTransform(dragDeltaX, dragDeltaY * 0.16);
+          });
+        }
+
+        function clearPendingFrame() {
+          if (frameId) {
+            window.cancelAnimationFrame(frameId);
+            frameId = 0;
+          }
+        }
 
         function renderQuestion() {
           const item = questions[currentIndex];
           axis.textContent = item.axis;
           question.textContent = item.question;
-          hint.textContent = item.hint;
+          hint.textContent = `左: ${item.plusLabel} / 右: ${item.minusLabel}`;
+          plusButton.textContent = item.plusLabel;
+          minusButton.textContent = item.minusLabel;
           counter.textContent = `${currentIndex + 1} / ${questions.length}`;
           deck.style.display = "block";
           result.classList.remove("is-visible");
           card.classList.remove("is-swipe-left", "is-swipe-right");
+          card.style.transition = "";
           card.style.transform = "";
           card.style.opacity = "";
+          dragDeltaX = 0;
+          dragDeltaY = 0;
+          isAnimating = false;
         }
 
         function showResult() {
@@ -234,11 +279,20 @@
         }
 
         function answer(direction) {
+          if (isAnimating) {
+            return;
+          }
+
+          isAnimating = true;
+
           if (direction === "plus") {
             plusCount += 1;
           }
 
-          card.classList.add(direction === "plus" ? "is-swipe-right" : "is-swipe-left");
+          clearPendingFrame();
+          card.style.transition = "transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 180ms ease";
+          card.style.opacity = "0";
+          setCardTransform(direction === "plus" ? -520 : 520, dragDeltaY * 0.16);
 
           window.setTimeout(() => {
             currentIndex += 1;
@@ -259,11 +313,20 @@
         });
 
         card.addEventListener("pointerdown", (event) => {
+          if (isAnimating) {
+            return;
+          }
+
           isDragging = true;
           dragStartX = event.clientX;
+          dragStartY = event.clientY;
           dragDeltaX = 0;
+          dragDeltaY = 0;
           card.setPointerCapture(event.pointerId);
           card.style.transition = "none";
+          if (event.cancelable) {
+            event.preventDefault();
+          }
         });
 
         card.addEventListener("pointermove", (event) => {
@@ -272,11 +335,14 @@
           }
 
           dragDeltaX = event.clientX - dragStartX;
-          const rotate = Math.max(-10, Math.min(10, dragDeltaX / 18));
-          card.style.transform = `translateX(${dragDeltaX}px) rotate(${rotate}deg)`;
+          dragDeltaY = event.clientY - dragStartY;
+          scheduleCardTransform();
+          if (event.cancelable) {
+            event.preventDefault();
+          }
         });
 
-        card.addEventListener("pointerup", () => {
+        function endDrag() {
           if (!isDragging) {
             return;
           }
@@ -285,12 +351,19 @@
           card.style.transition = "";
 
           if (Math.abs(dragDeltaX) > 72) {
-            answer(dragDeltaX > 0 ? "plus" : "minus");
+            answer(dragDeltaX < 0 ? "plus" : "minus");
             return;
           }
 
-          card.style.transform = "";
-        });
+          clearPendingFrame();
+          card.style.transition = "transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+          setCardTransform(0, 0);
+          dragDeltaX = 0;
+          dragDeltaY = 0;
+        }
+
+        card.addEventListener("pointerup", endDrag);
+        card.addEventListener("pointercancel", endDrag);
 
         reset.addEventListener("click", () => {
           currentIndex = 0;

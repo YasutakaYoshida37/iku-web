@@ -332,9 +332,11 @@ h2 {
   flex-direction: column;
   justify-content: space-between;
   padding: 22px;
-  touch-action: pan-y;
+  backface-visibility: hidden;
+  touch-action: none;
   transition: opacity 180ms ease, transform 180ms ease;
   user-select: none;
+  will-change: opacity, transform;
   z-index: 3;
 }
 
