@@ -7,6 +7,11 @@ const publicPages = [
   { file: 'privacy/index.html', canonical: 'https://ikuapp.jp/privacy/' },
   { file: 'terms/index.html', canonical: 'https://ikuapp.jp/terms/' },
   { file: 'support/index.html', canonical: 'https://ikuapp.jp/support/' },
+  { file: 'drink/index.html', canonical: 'https://ikuapp.jp/drink/' },
+  { file: 'date/index.html', canonical: 'https://ikuapp.jp/date/' },
+  { file: 'work/index.html', canonical: 'https://ikuapp.jp/work/' },
+  { file: 'overbooked/index.html', canonical: 'https://ikuapp.jp/overbooked/' },
+  { file: 'decline/index.html', canonical: 'https://ikuapp.jp/decline/' },
 ];
 const allPages = [...publicPages, { file: '404.html' }];
 
