@@ -41,6 +41,8 @@ function localPathForUrl(url) {
 for (const { file } of allPages) {
   const html = read(file);
   assert(/<title>[^<]+<\/title>/.test(html), `${file}: missing title`);
+  assert(html.includes('data-domain="ikuapp.jp" src="https://plausible.io/js/script.js"'), `${file}: missing Plausible script`);
+  assert(html.includes('src="/assets/analytics.js"'), `${file}: missing local analytics script`);
 
   for (const match of html.matchAll(/(?:href|src)="(\/[^"#?]*)/g)) {
     const targetPath = localPathForUrl(match[1]);
@@ -64,5 +66,9 @@ const sitemap = read('sitemap.xml');
 for (const { canonical } of publicPages) {
   assert(sitemap.includes(`<loc>${canonical}</loc>`), `sitemap.xml: missing ${canonical}`);
 }
+
+const analytics = read('assets/analytics.js');
+assert(analytics.includes('App Store Click'), 'assets/analytics.js: missing App Store click tracking');
+assert(analytics.includes('iku_latest_touch'), 'assets/analytics.js: missing attribution storage');
 
 console.log('Static site checks passed.');

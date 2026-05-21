@@ -21,3 +21,15 @@ This repository is intended for GitHub Pages with the custom domain `ikuapp.jp`.
 GitHub Pages is configured for `ikuapp.jp` and `www.ikuapp.jp` with HTTPS enforcement.
 
 Before App Store submission, confirm that `support@ikuapp.jp` can receive mail.
+
+## Analytics
+
+All pages include the Plausible Analytics script for `ikuapp.jp` and the local `/assets/analytics.js` helper.
+
+Tracked basics:
+
+- Pageviews through Plausible
+- App Store link clicks as the custom event `App Store Click`
+- UTM parameters stored in localStorage for click attribution
+
+To view data, add `ikuapp.jp` as a site in Plausible and create a custom-event goal named `App Store Click`.
