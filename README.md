@@ -11,8 +11,20 @@ Official static site for Iku?.
 - `/drink/` search landing page for drinking-party hesitation
 - `/date/` search landing page for date hesitation
 - `/work/` search landing page for work-social obligation hesitation
+- `/friend/` search landing page for friend invitation hesitation
+- `/family/` search landing page for family-plan hesitation
+- `/matching/` search landing page for matching-app invitation hesitation
+- `/tired/` search landing page for tired-but-unsure invitations
+- `/money/` search landing page for budget-related invitation hesitation
+- `/weekend/` search landing page for weekend-plan hesitation
+- `/after-work/` search landing page for after-work plan hesitation
 - `/overbooked/` search landing page for overbooked users
+- `/solo-time/` search landing page for wanting time alone
+- `/fomo/` search landing page for fear-of-missing-out hesitation
+- `/relationship/` search landing page for relationship-pressure hesitation
 - `/decline/` search landing page for invitation refusal anxiety
+
+The extra search landing pages can be regenerated with `node scripts/generate-extra-guides.mjs`.
 
 ## Deployment
 

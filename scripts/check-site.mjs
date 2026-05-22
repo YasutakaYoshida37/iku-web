@@ -10,7 +10,17 @@ const publicPages = [
   { file: 'drink/index.html', canonical: 'https://ikuapp.jp/drink/' },
   { file: 'date/index.html', canonical: 'https://ikuapp.jp/date/' },
   { file: 'work/index.html', canonical: 'https://ikuapp.jp/work/' },
+  { file: 'friend/index.html', canonical: 'https://ikuapp.jp/friend/' },
+  { file: 'family/index.html', canonical: 'https://ikuapp.jp/family/' },
+  { file: 'matching/index.html', canonical: 'https://ikuapp.jp/matching/' },
+  { file: 'tired/index.html', canonical: 'https://ikuapp.jp/tired/' },
+  { file: 'money/index.html', canonical: 'https://ikuapp.jp/money/' },
+  { file: 'weekend/index.html', canonical: 'https://ikuapp.jp/weekend/' },
+  { file: 'after-work/index.html', canonical: 'https://ikuapp.jp/after-work/' },
   { file: 'overbooked/index.html', canonical: 'https://ikuapp.jp/overbooked/' },
+  { file: 'solo-time/index.html', canonical: 'https://ikuapp.jp/solo-time/' },
+  { file: 'fomo/index.html', canonical: 'https://ikuapp.jp/fomo/' },
+  { file: 'relationship/index.html', canonical: 'https://ikuapp.jp/relationship/' },
   { file: 'decline/index.html', canonical: 'https://ikuapp.jp/decline/' },
 ];
 const allPages = [...publicPages, { file: '404.html' }];
