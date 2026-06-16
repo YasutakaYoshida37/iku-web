@@ -8,6 +8,9 @@ Official static site for Iku?.
 - `/privacy/` privacy policy
 - `/terms/` terms
 - `/support/` support
+- `/noteclear/` landing page for NoteClear
+- `/noteclear/privacy/` privacy policy for NoteClear
+- `/noteclear/support/` support for NoteClear
 - `/drink/` search landing page for drinking-party hesitation
 - `/date/` search landing page for date hesitation
 - `/work/` search landing page for work-social obligation hesitation
